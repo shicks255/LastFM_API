@@ -45,5 +45,33 @@ public class ArtistQueryBuilder
         }
     }
 
+    public String getArtist()
+    {
+        return m_artist;
+    }
 
+    public void setArtist(String artist)
+    {
+        m_artist = artist;
+    }
+
+    public int getLimit()
+    {
+        return m_limit;
+    }
+
+    public void setLimit(int limit)
+    {
+        m_limit = limit;
+    }
+
+    public int getPage()
+    {
+        return m_page;
+    }
+
+    public void setPage(int page)
+    {
+        m_page = page;
+    }
 }
