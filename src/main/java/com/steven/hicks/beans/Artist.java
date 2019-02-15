@@ -13,13 +13,19 @@ public class Artist
     private String m_imageMedium = "";
     private String m_imageLarge = "";
 
-    private ArtistSearcher.Image image;
+    private ArtistSearcher.Image[] image;
 
     private int    m_listeners;
     private long   m_plays;
 
     private String m_bioSummary = "";
     private String m_bioContent = "";
+
+    @Override
+    public String toString()
+    {
+        return m_name + " " + m_url;
+    }
 
     public String getName()
     {
@@ -121,12 +127,12 @@ public class Artist
         m_bioContent = bioContent;
     }
 
-    public ArtistSearcher.Image getImage()
+    public ArtistSearcher.Image[] getImage()
     {
         return image;
     }
 
-    public void setImage(ArtistSearcher.Image image)
+    public void setImage(ArtistSearcher.Image[] image)
     {
         this.image = image;
     }

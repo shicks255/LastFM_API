@@ -1,9 +1,15 @@
 package com.steven.hicks.logic;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.steven.hicks.MissingConfigKeyException;
 import com.steven.hicks.NoConfigException;
 import com.steven.hicks.beans.Artist;
@@ -12,6 +18,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -62,10 +69,11 @@ public class ArtistSearcher
 
 //            m_objectMapper.configure()
             JsonNode node = m_objectMapper.readTree(data.toString());
-            System.out.println(node);
-            ArtistMatches matchers = m_objectMapper.readValue(node.findValue("artist").toString(), new TypeReference<List<Artist>>(){});
-            System.out.println(matchers);
-            artistList = matchers.artists;
+            JsonNode inner = node.get("results").get("artistmatches").get("artist");
+            System.out.println(inner);
+
+            Artist[] artists = m_objectMapper.treeToValue(inner, Artist[].class);
+            artistList = Arrays.asList(artists);
         }
         catch (Exception e)
         { }
@@ -79,9 +87,10 @@ public class ArtistSearcher
         List<Artist> artists = Collections.emptyList();
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Image
     {
-//        String text = "";
+        String text = "";
         String size = "";
 
         public String getSize()
@@ -94,16 +103,16 @@ public class ArtistSearcher
             this.size = size;
         }
 
+        @JsonProperty("#text")
+        public String getText()
+        {
+            return text;
+        }
 
-        //        public String getText()
-//        {
-//            return text;
-//        }
-//
-//        public void setText(String text)
-//        {
-//            this.text = text;
-//        }
+        public void setText(String text)
+        {
+            this.text = text;
+        }
     }
 
 }
