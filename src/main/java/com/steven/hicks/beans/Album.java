@@ -1,7 +1,7 @@
 package com.steven.hicks.beans;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,13 +15,16 @@ public class Album
     private String m_mbid = "";
     private String m_url = "";
     private String m_releasedate = "";
-    private String m_imageSmall = "";
-    private String m_imageMedium = "";
-    private String m_imageLarge = "";
+    private Image[] image;
     private int    m_listeners;
     private long   m_playCount;
+    private Tracks  tracks;
 
-    private List<Track> m_tracks = Collections.emptyList();
+    @Override
+    public String toString()
+    {
+        return m_name + " " + m_artist + " ";
+    }
 
     public String getName()
     {
@@ -83,34 +86,24 @@ public class Album
         m_releasedate = releasedate;
     }
 
-    public String getImageSmall()
+    public Image[] getImage()
     {
-        return m_imageSmall;
+        return image;
     }
 
-    public void setImageSmall(String imageSmall)
+    public void setImage(Image[] image)
     {
-        m_imageSmall = imageSmall;
+        this.image = image;
     }
 
-    public String getImageMedium()
+    public Tracks getTracks()
     {
-        return m_imageMedium;
+        return tracks;
     }
 
-    public void setImageMedium(String imageMedium)
+    public void setTracks(Tracks tracks)
     {
-        m_imageMedium = imageMedium;
-    }
-
-    public String getImageLarge()
-    {
-        return m_imageLarge;
-    }
-
-    public void setImageLarge(String imageLarge)
-    {
-        m_imageLarge = imageLarge;
+        this.tracks = tracks;
     }
 
     public int getListeners()
@@ -133,19 +126,70 @@ public class Album
         m_playCount = playCount;
     }
 
-    public List<Track> getTracks()
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Image
     {
-        return m_tracks;
+        String text = "";
+        String size = "";
+
+        public String getSize()
+        {
+            return size;
+        }
+
+        public void setSize(String size)
+        {
+            this.size = size;
+        }
+
+        @JsonProperty("#text")
+        public String getText()
+        {
+            return text;
+        }
+
+        public void setText(String text)
+        {
+            this.text = text;
+        }
     }
 
-    public void setTracks(List<Track> tracks)
+    public static class Tracks
     {
-        m_tracks = tracks;
+        private Track[] track;
+
+        public Track[] getTrack()
+        {
+            return track;
+        }
+
+        public void setTrack(Track[] track)
+        {
+            this.track = track;
+        }
     }
 
+    public static class Attr
+    {
+        private String rank = "";
+
+        public String getRank()
+        {
+            return rank;
+        }
+
+        public void setRank(String rank)
+        {
+            this.rank = rank;
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Track
     {
         private String m_rank = "";
+        private Attr attr;
         private String m_name = "";
         private int    m_duration;
 
@@ -177,6 +221,17 @@ public class Album
         public void setDuration(int duration)
         {
             m_duration = duration;
+        }
+
+        @JsonProperty("@attr")
+        public Attr getAttr()
+        {
+            return attr;
+        }
+
+        public void setAttr(Attr attr)
+        {
+            this.attr = attr;
         }
     }
 }

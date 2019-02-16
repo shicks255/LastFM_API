@@ -1,5 +1,6 @@
 package com.steven.hicks.logic;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.steven.hicks.MissingConfigKeyException;
@@ -45,7 +46,7 @@ public class AlbumSearcher
 
         apiEndpoint.append("&api_key=" + config.getString("api_key") +"&format=json");
 
-        List<Album> artistList = Collections.emptyList();
+        List<Album> albumList = Collections.emptyList();
         try
         {
             URL url = new URL(apiEndpoint.toString());
@@ -55,23 +56,57 @@ public class AlbumSearcher
             connection.setRequestMethod("GET");
 
             StringBuilder data = new StringBuilder();
-            String input = "";
+            String input;
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             while ((input = in.readLine()) != null)
                 data.append(input);
 
-//            m_objectMapper.configure()
+//            System.out.println(data);
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("results").get("albummatches").get("album");
-            System.out.println(inner);
+//            System.out.println(inner);
 
             Album[] artists = m_objectMapper.treeToValue(inner, Album[].class);
-            artistList = Arrays.asList(artists);
+            albumList = Arrays.asList(artists);
         }
         catch (Exception e)
         { }
 
-        return artistList;
+        return albumList;
     }
 
+    public Album getFullAlbum(Album a)
+    {
+        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&mbid=");
+        apiEndpoint.append(a.getMbid());
+        apiEndpoint.append("&api_key=" + config.getString("api_key") +"&format=json");
+
+        Album fullAlbum = null;
+        try
+        {
+            URL url = new URL(apiEndpoint.toString());
+            HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
+
+            connection.setRequestProperty("accept", "application/json");
+            connection.setRequestMethod("GET");
+
+            StringBuilder data = new StringBuilder();
+            String input;
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            while ((input = in.readLine()) != null)
+                data.append(input);
+
+            System.out.println(data);
+            m_objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+            JsonNode node = m_objectMapper.readTree(data.toString());
+            JsonNode inner = node.get("album");
+            Album aa = m_objectMapper.treeToValue(inner, Album.class);
+            fullAlbum = aa;
+//            fullAlbum.setListeners(a.getListeners());
+        }
+        catch (Exception e)
+        {}
+
+        return fullAlbum;
+    }
 }

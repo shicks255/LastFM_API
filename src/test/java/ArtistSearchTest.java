@@ -13,12 +13,14 @@ public class ArtistSearchTest
     @Test
     public void artistSearchTest1()
     {
-
-        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("owen").build();
+        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("owen").setLimit(2).build();
         ArtistSearcher searcher = new ArtistSearcher();
         List<Artist> artists = searcher.search(builder);
 
-        artists.forEach(System.out::println);
+        Artist fullArtist = searcher.getFullArtist(artists.get(0));
+        System.out.println(fullArtist);
+
+//        artists.forEach(System.out::println);
     }
 
 }

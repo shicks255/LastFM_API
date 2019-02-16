@@ -1,7 +1,7 @@
 package com.steven.hicks.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.steven.hicks.logic.ArtistSearcher;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Artist
@@ -9,22 +9,17 @@ public class Artist
     private String m_name = "";
     private String m_mbid = "";
     private String m_url = "";
-    private String m_imageSmall = "";
-    private String m_imageMedium = "";
-    private String m_imageLarge = "";
 
-    private ArtistSearcher.Image[] image;
+    private Image[] image;
+    private Tags tags;
+    private Bio bio;
 
     private int    m_listeners;
-    private long   m_plays;
-
-    private String m_bioSummary = "";
-    private String m_bioContent = "";
 
     @Override
     public String toString()
     {
-        return m_name + " " + m_listeners + " "  + m_url;
+        return m_name + " " + m_listeners + " "  + m_url + " " + m_mbid;
     }
 
     public String getName()
@@ -57,36 +52,6 @@ public class Artist
         m_url = url;
     }
 
-    public String getImageSmall()
-    {
-        return m_imageSmall;
-    }
-
-    public void setImageSmall(String imageSmall)
-    {
-        m_imageSmall = imageSmall;
-    }
-
-    public String getImageMedium()
-    {
-        return m_imageMedium;
-    }
-
-    public void setImageMedium(String imageMedium)
-    {
-        m_imageMedium = imageMedium;
-    }
-
-    public String getImageLarge()
-    {
-        return m_imageLarge;
-    }
-
-    public void setImageLarge(String imageLarge)
-    {
-        m_imageLarge = imageLarge;
-    }
-
     public int getListeners()
     {
         return m_listeners;
@@ -97,43 +62,139 @@ public class Artist
         m_listeners = listeners;
     }
 
-    public long getPlays()
-    {
-        return m_plays;
-    }
-
-    public void setPlays(long plays)
-    {
-        m_plays = plays;
-    }
-
-    public String getBioSummary()
-    {
-        return m_bioSummary;
-    }
-
-    public void setBioSummary(String bioSummary)
-    {
-        m_bioSummary = bioSummary;
-    }
-
-    public String getBioContent()
-    {
-        return m_bioContent;
-    }
-
-    public void setBioContent(String bioContent)
-    {
-        m_bioContent = bioContent;
-    }
-
-    public ArtistSearcher.Image[] getImage()
+    public Image[] getImage()
     {
         return image;
     }
 
-    public void setImage(ArtistSearcher.Image[] image)
+    public void setImage(Image[] image)
     {
         this.image = image;
+    }
+
+    public Bio getBio()
+    {
+        return bio;
+    }
+
+    public void setBio(Bio bio)
+    {
+        this.bio = bio;
+    }
+
+    public Tags getTags()
+    {
+        return tags;
+    }
+
+    public void setTags(Tags tags)
+    {
+        this.tags = tags;
+    }
+
+    public static class Image
+    {
+        String text = "";
+        String size = "";
+
+        public String getSize()
+        {
+            return size;
+        }
+
+        public void setSize(String size)
+        {
+            this.size = size;
+        }
+
+        @JsonProperty("#text")
+        public String getText()
+        {
+            return text;
+        }
+
+        public void setText(String text)
+        {
+            this.text = text;
+        }
+    }
+
+    public static class Tags
+    {
+        private Tag[] tag;
+
+        public Tag[] getTag()
+        {
+            return tag;
+        }
+
+        public void setTag(Tag[] tag)
+        {
+            this.tag = tag;
+        }
+    }
+
+    public static class Tag
+    {
+        private String name = "";
+        private String url = "";
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        public String getUrl()
+        {
+            return url;
+        }
+
+        public void setUrl(String url)
+        {
+            this.url = url;
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class Bio
+    {
+        private String published = "";
+        private String summary = "";
+        private String content = "";
+
+        public String getPublished()
+        {
+            return published;
+        }
+
+        public void setPublished(String published)
+        {
+            this.published = published;
+        }
+
+        public String getSummary()
+        {
+            return summary;
+        }
+
+        public void setSummary(String summary)
+        {
+            this.summary = summary;
+        }
+
+        public String getContent()
+        {
+            return content;
+        }
+
+        public void setContent(String content)
+        {
+            this.content = content;
+        }
     }
 }

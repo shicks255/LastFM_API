@@ -1,15 +1,8 @@
 package com.steven.hicks.logic;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.steven.hicks.MissingConfigKeyException;
 import com.steven.hicks.NoConfigException;
 import com.steven.hicks.beans.Artist;
@@ -62,15 +55,13 @@ public class ArtistSearcher
             connection.setRequestMethod("GET");
 
             StringBuilder data = new StringBuilder();
-            String input = "";
+            String input;
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             while ((input = in.readLine()) != null)
                 data.append(input);
 
-//            m_objectMapper.configure()
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("results").get("artistmatches").get("artist");
-            System.out.println(inner);
 
             Artist[] artists = m_objectMapper.treeToValue(inner, Artist[].class);
             artistList = Arrays.asList(artists);
@@ -81,38 +72,38 @@ public class ArtistSearcher
         return artistList;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class ArtistMatches
+    public Artist getFullArtist(Artist a)
     {
-        List<Artist> artists = Collections.emptyList();
-    }
+        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=artist.getInfo&mbid=");
+        apiEndpoint.append(a.getMbid());
+        apiEndpoint.append("&api_key=" + config.getString("api_key") +"&format=json");
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Image
-    {
-        String text = "";
-        String size = "";
-
-        public String getSize()
+        Artist fullArtist = null;
+        try
         {
-            return size;
-        }
+            URL url = new URL(apiEndpoint.toString());
+            HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
 
-        public void setSize(String size)
-        {
-            this.size = size;
-        }
+            connection.setRequestProperty("accept", "application/json");
+            connection.setRequestMethod("GET");
 
-        @JsonProperty("#text")
-        public String getText()
-        {
-            return text;
-        }
+            StringBuilder data = new StringBuilder();
+            String input;
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            while ((input = in.readLine()) != null)
+                data.append(input);
 
-        public void setText(String text)
-        {
-            this.text = text;
+            m_objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+            JsonNode node = m_objectMapper.readTree(data.toString());
+            JsonNode inner = node.get("artist");
+            Artist aa = m_objectMapper.treeToValue(inner, Artist.class);
+            fullArtist = aa;
+            fullArtist.setListeners(a.getListeners());
         }
+        catch (Exception e)
+        {}
+
+        return fullArtist;
     }
 
 }
