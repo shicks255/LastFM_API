@@ -24,7 +24,7 @@ public class Artist
     @Override
     public String toString()
     {
-        return m_name + " " + m_url;
+        return m_name + " " + m_listeners + " "  + m_url;
     }
 
     public String getName()

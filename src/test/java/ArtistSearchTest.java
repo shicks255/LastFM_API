@@ -14,7 +14,7 @@ public class ArtistSearchTest
     public void artistSearchTest1()
     {
 
-        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("American Football").build();
+        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("owen").build();
         ArtistSearcher searcher = new ArtistSearcher();
         List<Artist> artists = searcher.search(builder);
 

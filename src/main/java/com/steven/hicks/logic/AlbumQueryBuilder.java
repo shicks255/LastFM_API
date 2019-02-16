@@ -12,7 +12,7 @@ public class AlbumQueryBuilder
         private int    limit = 30;
         private int    page = 1;
 
-        public AlbumQueryBuilder.Builder artistName(String name)
+        public AlbumQueryBuilder.Builder albumName(String name)
         {
             this.name = name.replace(" ", "%20");
             return this;
@@ -39,5 +39,35 @@ public class AlbumQueryBuilder
 
             return builder;
         }
+    }
+
+    public String getAlbum()
+    {
+        return m_album;
+    }
+
+    public void setAlbum(String album)
+    {
+        m_album = album;
+    }
+
+    public int getLimit()
+    {
+        return m_limit;
+    }
+
+    public void setLimit(int limit)
+    {
+        m_limit = limit;
+    }
+
+    public int getPage()
+    {
+        return m_page;
+    }
+
+    public void setPage(int page)
+    {
+        m_page = page;
     }
 }
