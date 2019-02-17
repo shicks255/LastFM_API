@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.steven.hicks.MissingConfigKeyException;
 import com.steven.hicks.NoConfigException;
+import com.steven.hicks.beans.Album;
 import com.steven.hicks.beans.Artist;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -70,6 +71,45 @@ public class ArtistSearcher
         { }
 
         return artistList;
+    }
+
+    public List<Album> getAlbums(ArtistQueryBuilder query)
+    {
+        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=");
+
+        apiEndpoint.append(query.getMbid());
+        apiEndpoint.append("&limit=" + query.getLimit());
+        apiEndpoint.append("&page=" + query.getPage());
+
+        apiEndpoint.append("&api_key=" + config.getString("api_key") +"&format=json");
+
+        List<Album> albumList = Collections.emptyList();
+        try
+        {
+            URL url = new URL(apiEndpoint.toString());
+            HttpsURLConnection connection = (HttpsURLConnection)url.openConnection();
+
+            connection.setRequestProperty("accept", "application/json");
+            connection.setRequestMethod("GET");
+
+            StringBuilder data = new StringBuilder();
+            String input;
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            while ((input = in.readLine()) != null)
+                data.append(input);
+
+            System.out.println(data);
+            m_objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+            JsonNode node = m_objectMapper.readTree(data.toString());
+            JsonNode inner = node.get("topalbums").get("album");
+
+            Album[] albums = m_objectMapper.treeToValue(inner, Album[].class);
+            albumList = Arrays.asList(albums);
+        }
+        catch (Exception e)
+        { }
+
+        return albumList;
     }
 
     public Artist getFullArtist(Artist a)

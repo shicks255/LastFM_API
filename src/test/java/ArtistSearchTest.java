@@ -1,4 +1,5 @@
 
+import com.steven.hicks.beans.Album;
 import com.steven.hicks.beans.Artist;
 import com.steven.hicks.logic.ArtistQueryBuilder;
 import com.steven.hicks.logic.ArtistSearcher;
@@ -18,7 +19,11 @@ public class ArtistSearchTest
         List<Artist> artists = searcher.search(builder);
 
         Artist fullArtist = searcher.getFullArtist(artists.get(0));
+
+        List<Album> albums = searcher.getAlbums(new ArtistQueryBuilder.Builder().mbid(fullArtist.getMbid()).build());
+
         System.out.println(fullArtist);
+        System.out.println(albums);
 
 //        artists.forEach(System.out::println);
     }

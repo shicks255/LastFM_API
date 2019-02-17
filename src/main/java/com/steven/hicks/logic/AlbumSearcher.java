@@ -97,7 +97,6 @@ public class AlbumSearcher
                 data.append(input);
 
             System.out.println(data);
-            m_objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("album");
             Album aa = m_objectMapper.treeToValue(inner, Album.class);
