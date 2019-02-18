@@ -1,10 +1,8 @@
 package com.steven.hicks.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Collections;
-import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Album
@@ -19,6 +17,9 @@ public class Album
     private int    m_listeners;
     private long   m_playCount;
     private Tracks  tracks;
+
+    public Album()
+    {}
 
     @Override
     public String toString()
@@ -41,6 +42,7 @@ public class Album
         return m_artist;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public void setArtist(String artist)
     {
         m_artist = artist;
@@ -155,6 +157,7 @@ public class Album
         }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Tracks
     {
         private Track[] track;
@@ -170,6 +173,7 @@ public class Album
         }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Attr
     {
         private String rank = "";

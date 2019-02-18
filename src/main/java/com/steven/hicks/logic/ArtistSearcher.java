@@ -1,5 +1,6 @@
 package com.steven.hicks.logic;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,15 +8,13 @@ import com.steven.hicks.MissingConfigKeyException;
 import com.steven.hicks.NoConfigException;
 import com.steven.hicks.beans.Album;
 import com.steven.hicks.beans.Artist;
+import com.steven.hicks.beans.ArtistAlbums;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ArtistSearcher
 {
@@ -73,17 +72,16 @@ public class ArtistSearcher
         return artistList;
     }
 
-    public List<Album> getAlbums(ArtistQueryBuilder query)
+    public List<ArtistAlbums> getAlbums(ArtistQueryBuilder query)
     {
         StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=");
 
         apiEndpoint.append(query.getMbid());
         apiEndpoint.append("&limit=" + query.getLimit());
         apiEndpoint.append("&page=" + query.getPage());
-
         apiEndpoint.append("&api_key=" + config.getString("api_key") +"&format=json");
 
-        List<Album> albumList = Collections.emptyList();
+        List<ArtistAlbums> albumList = Collections.emptyList();
         try
         {
             URL url = new URL(apiEndpoint.toString());
@@ -98,13 +96,11 @@ public class ArtistSearcher
             while ((input = in.readLine()) != null)
                 data.append(input);
 
-            System.out.println(data);
             m_objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("topalbums").get("album");
-
-            Album[] albums = m_objectMapper.treeToValue(inner, Album[].class);
-            albumList = Arrays.asList(albums);
+            List<ArtistAlbums> artistAlbums = m_objectMapper.readValue(inner.toString(), new TypeReference<List<ArtistAlbums>>() {});
+            albumList = artistAlbums;
         }
         catch (Exception e)
         { }
@@ -112,10 +108,10 @@ public class ArtistSearcher
         return albumList;
     }
 
-    public Artist getFullArtist(Artist a)
+    public Artist getFullArtist(String mbid)
     {
         StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=artist.getInfo&mbid=");
-        apiEndpoint.append(a.getMbid());
+        apiEndpoint.append(mbid);
         apiEndpoint.append("&api_key=" + config.getString("api_key") +"&format=json");
 
         Artist fullArtist = null;
@@ -138,7 +134,7 @@ public class ArtistSearcher
             JsonNode inner = node.get("artist");
             Artist aa = m_objectMapper.treeToValue(inner, Artist.class);
             fullArtist = aa;
-            fullArtist.setListeners(a.getListeners());
+//            fullArtist.setListeners(a.getListeners());
         }
         catch (Exception e)
         {}

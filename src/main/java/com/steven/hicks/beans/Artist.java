@@ -161,7 +161,7 @@ public class Artist
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class Bio
+    public static class Bio
     {
         private String published = "";
         private String summary = "";
