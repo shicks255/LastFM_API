@@ -192,17 +192,17 @@ public class Album
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Track
     {
-        private String m_rank = "";
+        private Integer m_rank;
         private Attr attr;
         private String m_name = "";
         private int    m_duration;
 
-        public String getRank()
+        public Integer getRank()
         {
-            return m_rank;
+            return m_rank != null ? m_rank : 0;
         }
 
-        public void setRank(String rank)
+        public void setRank(Integer rank)
         {
             m_rank = rank;
         }

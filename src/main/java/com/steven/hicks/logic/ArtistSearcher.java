@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.steven.hicks.MissingConfigKeyException;
 import com.steven.hicks.NoConfigException;
-import com.steven.hicks.beans.Album;
 import com.steven.hicks.beans.Artist;
 import com.steven.hicks.beans.ArtistAlbums;
 
@@ -14,7 +13,10 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class ArtistSearcher
 {
@@ -100,6 +102,8 @@ public class ArtistSearcher
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("topalbums").get("album");
             List<ArtistAlbums> artistAlbums = m_objectMapper.readValue(inner.toString(), new TypeReference<List<ArtistAlbums>>() {});
+            artistAlbums.removeIf(x -> x.getImage().length == 0);
+            artistAlbums.removeIf(x -> x.getMbid().length() == 0);
             albumList = artistAlbums;
         }
         catch (Exception e)
@@ -134,7 +138,6 @@ public class ArtistSearcher
             JsonNode inner = node.get("artist");
             Artist aa = m_objectMapper.treeToValue(inner, Artist.class);
             fullArtist = aa;
-//            fullArtist.setListeners(a.getListeners());
         }
         catch (Exception e)
         {}

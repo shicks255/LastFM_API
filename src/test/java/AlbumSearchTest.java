@@ -13,7 +13,7 @@ public class AlbumSearchTest
         AlbumSearcher searcher = new AlbumSearcher();
         List<Album> albums = searcher.search(queryBuilder);
 
-        Album full = searcher.getFullAlbum(albums.get(0));
+        Album full = searcher.getFullAlbum(albums.get(0).getMbid());
 
         System.out.println(full);
     }

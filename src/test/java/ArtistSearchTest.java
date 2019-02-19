@@ -1,10 +1,13 @@
+import com.steven.hicks.beans.Album;
 import com.steven.hicks.beans.Artist;
 import com.steven.hicks.beans.ArtistAlbums;
+import com.steven.hicks.logic.AlbumSearcher;
 import com.steven.hicks.logic.ArtistQueryBuilder;
 import com.steven.hicks.logic.ArtistSearcher;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArtistSearchTest
 {
@@ -12,18 +15,17 @@ public class ArtistSearchTest
     @Test
     public void artistSearchTest1()
     {
-        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("owen").setLimit(2).build();
+        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("slayer").setLimit(1).build();
         ArtistSearcher searcher = new ArtistSearcher();
         List<Artist> artists = searcher.search(builder);
 
         Artist fullArtist = searcher.getFullArtist(artists.get(0).getMbid());
+        AlbumSearcher albumSearcher = new AlbumSearcher();
 
         List<ArtistAlbums> albums = searcher.getAlbums(new ArtistQueryBuilder.Builder().mbid(fullArtist.getMbid()).build());
+        List<Album> theAlbums = albums.stream().map(x -> albumSearcher.getFullAlbum(x.getMbid())).collect(Collectors.toList());
 
-        System.out.println(fullArtist);
-        System.out.println(albums);
-        albums.forEach(System.out::println);
-        artists.forEach(System.out::println);
+        theAlbums.forEach(System.out::println);
     }
 
 }

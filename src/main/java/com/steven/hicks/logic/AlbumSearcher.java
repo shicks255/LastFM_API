@@ -1,12 +1,10 @@
 package com.steven.hicks.logic;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.steven.hicks.MissingConfigKeyException;
 import com.steven.hicks.NoConfigException;
 import com.steven.hicks.beans.Album;
-import com.steven.hicks.beans.Artist;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -61,10 +59,8 @@ public class AlbumSearcher
             while ((input = in.readLine()) != null)
                 data.append(input);
 
-//            System.out.println(data);
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("results").get("albummatches").get("album");
-//            System.out.println(inner);
 
             Album[] artists = m_objectMapper.treeToValue(inner, Album[].class);
             albumList = Arrays.asList(artists);
@@ -75,10 +71,10 @@ public class AlbumSearcher
         return albumList;
     }
 
-    public Album getFullAlbum(Album a)
+    public Album getFullAlbum(String mbid)
     {
         StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&mbid=");
-        apiEndpoint.append(a.getMbid());
+        apiEndpoint.append(mbid);
         apiEndpoint.append("&api_key=" + config.getString("api_key") +"&format=json");
 
         Album fullAlbum = null;
@@ -96,12 +92,10 @@ public class AlbumSearcher
             while ((input = in.readLine()) != null)
                 data.append(input);
 
-            System.out.println(data);
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("album");
             Album aa = m_objectMapper.treeToValue(inner, Album.class);
             fullAlbum = aa;
-//            fullAlbum.setListeners(a.getListeners());
         }
         catch (Exception e)
         {}

@@ -3,28 +3,36 @@ package com.steven.hicks.logic;
 public class AlbumQueryBuilder
 {
     private String m_album = "";
+    private String m_mbid = "";
     private int    m_limit = 30;
     private int    m_page = 1;
 
     public static class Builder
     {
         private String name = "";
+        private String mbid = "";
         private int    limit = 30;
         private int    page = 1;
 
-        public AlbumQueryBuilder.Builder albumName(String name)
+        public Builder albumName(String name)
         {
             this.name = name.replace(" ", "%20");
             return this;
         }
 
-        public AlbumQueryBuilder.Builder setLimit(int limit)
+        public Builder mbid(String mbid)
+        {
+            this.mbid = mbid;
+            return this;
+        }
+
+        public Builder setLimit(int limit)
         {
             this.limit = limit;
             return this;
         }
 
-        public AlbumQueryBuilder.Builder setPage(int page)
+        public Builder setPage(int page)
         {
             this.page = page;
             return this;
@@ -34,6 +42,7 @@ public class AlbumQueryBuilder
         {
             AlbumQueryBuilder builder = new AlbumQueryBuilder();
             builder.m_album = this.name;
+            builder.m_mbid = this.mbid;
             builder.m_limit = this.limit;
             builder.m_page = this.page;
 
@@ -69,5 +78,15 @@ public class AlbumQueryBuilder
     public void setPage(int page)
     {
         m_page = page;
+    }
+
+    public String getMbid()
+    {
+        return m_mbid;
+    }
+
+    public void setMbid(String mbid)
+    {
+        m_mbid = mbid;
     }
 }
