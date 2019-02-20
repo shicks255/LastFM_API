@@ -34,7 +34,14 @@ public class AlbumSearcher
         }
     }
 
-    public List<Album> search(AlbumQueryBuilder query)
+    /**
+     *
+     * Returns a list of <Album>Album</Album> given an <AlbumQueryBuilder>AlbumQueryBuilder</AlbumQueryBuilder>
+     *
+     * @param query - an AlbumQueryBuilder with the albumName, limit per page, and page number fields.
+     * @return List<<Album>Album</Album>>
+     */
+    public List<Album> searchForAlbums(AlbumQueryBuilder query)
     {
         StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.search&album=");
 
@@ -71,6 +78,14 @@ public class AlbumSearcher
         return albumList;
     }
 
+    /**
+     *
+     * Used to get details from an album, such as Tracks[] and Images[]
+     * Can be used after getting all the albums from an <ArtistSearcher>ArtistSearcher</ArtistSearcher>
+     *
+     * @param mbid - String MusicBrainz id.
+     * @return <Album>Album</Album>
+     */
     public Album getFullAlbum(String mbid)
     {
         StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&mbid=");

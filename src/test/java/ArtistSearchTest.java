@@ -15,9 +15,9 @@ public class ArtistSearchTest
     @Test
     public void artistSearchTest1()
     {
-        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("slayer").setLimit(1).build();
+        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("american football").setLimit(1).build();
         ArtistSearcher searcher = new ArtistSearcher();
-        List<Artist> artists = searcher.search(builder);
+        List<Artist> artists = searcher.searchForArtists(builder);
 
         Artist fullArtist = searcher.getFullArtist(artists.get(0).getMbid());
         AlbumSearcher albumSearcher = new AlbumSearcher();

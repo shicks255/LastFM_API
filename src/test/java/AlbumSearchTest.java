@@ -11,7 +11,7 @@ public class AlbumSearchTest
     {
         AlbumQueryBuilder queryBuilder = new AlbumQueryBuilder.Builder().albumName("disarm the descent").setLimit(1).setPage(1).build();
         AlbumSearcher searcher = new AlbumSearcher();
-        List<Album> albums = searcher.search(queryBuilder);
+        List<Album> albums = searcher.searchForAlbums(queryBuilder);
 
         Album full = searcher.getFullAlbum(albums.get(0).getMbid());
 

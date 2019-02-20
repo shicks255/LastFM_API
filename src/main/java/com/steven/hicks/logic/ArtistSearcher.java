@@ -37,7 +37,14 @@ public class ArtistSearcher
         }
     }
 
-    public List<Artist> search(ArtistQueryBuilder query)
+    /**
+     *
+     * Returns a list of <Artist>Artist</Artist> given an <ArtistQueryBuilder>ArtistQueryBuilder</ArtistQueryBuilder>
+     *
+     * @param query - <ArtistQueryBuilder>ArtistQueryBuilder</ArtistQueryBuilder> taking a name, mbid, limit, and page number
+     * @return List<<Artist>Artist</Artist>>
+     */
+    public List<Artist> searchForArtists(ArtistQueryBuilder query)
     {
         StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=artist.search&artist=");
 
@@ -74,6 +81,16 @@ public class ArtistSearcher
         return artistList;
     }
 
+    /**
+     * @NonNull(query.mbid)
+     *
+     * Takes an <ArtistQueryBuilder>ArtistQueryBuilder</ArtistQueryBuilder> with an MBID and returns a list of
+     * <ArtistAlbums>ArtistAlbums</ArtistAlbums>, which are dumb representations of the fuller <Album>Album</Album> object.
+     * Can then use <AlbumSearcher>AlbumSearcher</AlbumSearcher> to get the <Album>Album</Album> from the <ArtistAlbum>ArtistAlbum</ArtistAlbum>
+     *
+     * @param query - an <ArtistQueryBuilder>ArtistQueryBuilder</ArtistQueryBuilder> that <b>MUST</b> have the MBID field.
+     * @return - List<<ArtistAlbums>ArtistAlbums</ArtistAlbums>>
+     */
     public List<ArtistAlbums> getAlbums(ArtistQueryBuilder query)
     {
         StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&mbid=");
@@ -112,6 +129,13 @@ public class ArtistSearcher
         return albumList;
     }
 
+    /**
+     * Given an MBID, returns an 'full' artist, which includes tags, and bio, in addition to everything the searchForArtists()
+     * results gives you.
+     *
+     * @param mbid
+     * @return <Artist>Artist</Artist>
+     */
     public Artist getFullArtist(String mbid)
     {
         StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=artist.getInfo&mbid=");

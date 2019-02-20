@@ -1,5 +1,15 @@
 package com.steven.hicks.logic;
 
+/**
+ *
+ * Used for building queries to search for Artists
+ *
+ * Uses the builder pattern.  AlbumQueryBuilder has private constructor, cannot be
+ * instantiated except through its static class Builder.
+ *
+ * AlbumQueryBuilder aqb = new AlbumQueryBuilder.Builder().methods.build();
+ *
+ */
 public class AlbumQueryBuilder
 {
     private String m_album = "";
