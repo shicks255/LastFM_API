@@ -9,7 +9,10 @@ import com.steven.hicks.beans.Album;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -116,5 +119,47 @@ public class AlbumSearcher
         {}
 
         return fullAlbum;
+    }
+
+    public LocalDate getAlbumDate(String mbid)
+    {
+        StringBuilder apiEndpoint = new StringBuilder("http://musicbrainz.org/ws/2/release/" + mbid);
+        apiEndpoint.append("?fmt=json");
+        try
+        {
+            URL url = new URL(apiEndpoint.toString());
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+
+            connection.setRequestProperty("accept", "application/json");
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent", "http://www.stevenmhicks.com");
+
+            StringBuilder data = new StringBuilder();
+            String input;
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            while ((input = in.readLine()) != null)
+                data.append(input);
+
+            JsonNode jsonnode = m_objectMapper.readTree(data.toString()).get("date");
+
+            System.out.println(jsonnode);
+            if (jsonnode != null)
+            {
+                String[] dateItems = jsonnode.textValue().split("-");
+                if (dateItems != null && dateItems.length == 3)
+                {
+                    LocalDate releaseDate = LocalDate.of(Integer.valueOf(dateItems[0]),
+                            Integer.valueOf(dateItems[1]),
+                            Integer.valueOf(dateItems[2]));
+                    return releaseDate;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+
+        return LocalDate.of(1900, 01, 01);
     }
 }
