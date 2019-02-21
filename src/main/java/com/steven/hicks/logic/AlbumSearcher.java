@@ -129,6 +129,11 @@ public class AlbumSearcher
         return fullAlbum;
     }
 
+    /**
+     * Since lastfm album info doesnt include release date, this will fetch it from MusicBrainz
+     * @param mbid string of the album
+     * @return <LocalDate>release date</LocalDate>
+     */
     public LocalDate getAlbumDate(String mbid)
     {
         StringBuilder apiEndpoint = new StringBuilder("http://musicbrainz.org/ws/2/release/" + mbid);
