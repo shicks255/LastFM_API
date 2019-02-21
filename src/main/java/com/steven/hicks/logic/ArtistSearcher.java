@@ -11,6 +11,7 @@ import com.steven.hicks.beans.ArtistAlbums;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
@@ -65,9 +66,11 @@ public class ArtistSearcher
 
             StringBuilder data = new StringBuilder();
             String input;
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((input = in.readLine()) != null)
-                data.append(input);
+            try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")))
+            {
+                while ((input = in.readLine()) != null)
+                    data.append(input);
+            }
 
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("results").get("artistmatches").get("artist");
@@ -75,8 +78,10 @@ public class ArtistSearcher
             Artist[] artists = m_objectMapper.treeToValue(inner, Artist[].class);
             artistList = Arrays.asList(artists);
         }
-        catch (Exception e)
-        { }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
 
         return artistList;
     }
@@ -111,9 +116,11 @@ public class ArtistSearcher
 
             StringBuilder data = new StringBuilder();
             String input;
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((input = in.readLine()) != null)
-                data.append(input);
+            try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")))
+            {
+                while ((input = in.readLine()) != null)
+                    data.append(input);
+            }
 
             m_objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
             JsonNode node = m_objectMapper.readTree(data.toString());
@@ -123,8 +130,10 @@ public class ArtistSearcher
             artistAlbums.removeIf(x -> x.getMbid().length() == 0);
             albumList = artistAlbums;
         }
-        catch (Exception e)
-        { }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
 
         return albumList;
     }
@@ -153,9 +162,11 @@ public class ArtistSearcher
 
             StringBuilder data = new StringBuilder();
             String input;
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((input = in.readLine()) != null)
-                data.append(input);
+            try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));)
+            {
+                while ((input = in.readLine()) != null)
+                    data.append(input);
+            }
 
             m_objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
             JsonNode node = m_objectMapper.readTree(data.toString());
@@ -163,8 +174,10 @@ public class ArtistSearcher
             Artist aa = m_objectMapper.treeToValue(inner, Artist.class);
             fullArtist = aa;
         }
-        catch (Exception e)
-        {}
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
 
         return fullArtist;
     }

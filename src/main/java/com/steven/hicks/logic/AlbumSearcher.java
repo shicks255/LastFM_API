@@ -8,11 +8,11 @@ import com.steven.hicks.beans.Album;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -65,9 +65,11 @@ public class AlbumSearcher
 
             StringBuilder data = new StringBuilder();
             String input;
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((input = in.readLine()) != null)
-                data.append(input);
+            try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")))
+            {
+                while ((input = in.readLine()) != null)
+                    data.append(input);
+            }
 
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("results").get("albummatches").get("album");
@@ -75,8 +77,10 @@ public class AlbumSearcher
             Album[] artists = m_objectMapper.treeToValue(inner, Album[].class);
             albumList = Arrays.asList(artists);
         }
-        catch (Exception e)
-        { }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
 
         return albumList;
     }
@@ -106,17 +110,21 @@ public class AlbumSearcher
 
             StringBuilder data = new StringBuilder();
             String input;
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((input = in.readLine()) != null)
-                data.append(input);
+            try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")))
+            {
+                while ((input = in.readLine()) != null)
+                    data.append(input);
+            }
 
             JsonNode node = m_objectMapper.readTree(data.toString());
             JsonNode inner = node.get("album");
             Album aa = m_objectMapper.treeToValue(inner, Album.class);
             fullAlbum = aa;
         }
-        catch (Exception e)
-        {}
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
 
         return fullAlbum;
     }
@@ -136,21 +144,22 @@ public class AlbumSearcher
 
             StringBuilder data = new StringBuilder();
             String input;
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((input = in.readLine()) != null)
-                data.append(input);
+            try(BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8")))
+            {
+                while ((input = in.readLine()) != null)
+                    data.append(input);
+            }
 
             JsonNode jsonnode = m_objectMapper.readTree(data.toString()).get("date");
-
             System.out.println(jsonnode);
             if (jsonnode != null)
             {
                 String[] dateItems = jsonnode.textValue().split("-");
                 if (dateItems != null && dateItems.length == 3)
                 {
-                    LocalDate releaseDate = LocalDate.of(Integer.valueOf(dateItems[0]),
-                            Integer.valueOf(dateItems[1]),
-                            Integer.valueOf(dateItems[2]));
+                    LocalDate releaseDate = LocalDate.of(Integer.parseInt(dateItems[0]),
+                            Integer.parseInt(dateItems[1]),
+                            Integer.parseInt(dateItems[2]));
                     return releaseDate;
                 }
             }
