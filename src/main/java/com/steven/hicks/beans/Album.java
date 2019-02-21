@@ -3,6 +3,7 @@ package com.steven.hicks.beans;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Album
@@ -12,7 +13,7 @@ public class Album
     private long   m_id;
     private String m_mbid = "";
     private String m_url = "";
-    private String m_releasedate = "";
+    private LocalDate m_releasedate;
     private Image[] image;
     private int    m_listeners;
     private long   m_playCount;
@@ -78,12 +79,12 @@ public class Album
         m_url = url;
     }
 
-    public String getReleasedate()
+    public LocalDate getReleasedate()
     {
         return m_releasedate;
     }
 
-    public void setReleasedate(String releasedate)
+    public void setReleasedate(LocalDate releasedate)
     {
         m_releasedate = releasedate;
     }

@@ -5,17 +5,27 @@ import com.steven.hicks.logic.AlbumSearcher;
 import com.steven.hicks.logic.ArtistQueryBuilder;
 import com.steven.hicks.logic.ArtistSearcher;
 import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ArtistSearchTest
 {
+    @Test
+    public void basicTest()
+    {
+        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("Pink Floyd").build();
+        ArtistSearcher searcher = new ArtistSearcher();
+        List<Artist> artists = searcher.searchForArtists(builder);
+        assertTrue("Cant query Pink Floyd", artists!=null && artists.size() > 0);
+    }
 
     @Test
     public void artistSearchTest1()
     {
-        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("american football").setLimit(1).build();
+        String artistName = "american football";
+        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName(artistName).setLimit(1).build();
         ArtistSearcher searcher = new ArtistSearcher();
         List<Artist> artists = searcher.searchForArtists(builder);
 
@@ -23,9 +33,10 @@ public class ArtistSearchTest
         AlbumSearcher albumSearcher = new AlbumSearcher();
 
         List<ArtistAlbums> albums = searcher.getAlbums(new ArtistQueryBuilder.Builder().mbid(fullArtist.getMbid()).build());
-        List<Album> theAlbums = albums.stream().map(x -> albumSearcher.getFullAlbum(x.getMbid())).collect(Collectors.toList());
+        List<Album> fullAlbums = albums.stream().map(x -> albumSearcher.getFullAlbum(x.getMbid())).collect(Collectors.toList());
 
-        theAlbums.forEach(System.out::println);
+        assertTrue(artistName + " has albums", albums.size() > 0);
+        assertTrue(artistName + " has albums that were able to get full", fullAlbums.size() > 0);
     }
 
 }
