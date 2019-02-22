@@ -137,7 +137,7 @@ public class AlbumSearcher
     public LocalDate getAlbumDate(String mbid)
     {
         StringBuilder apiEndpoint = new StringBuilder("http://musicbrainz.org/ws/2/release/" + mbid);
-        apiEndpoint.append("?fmt=json");
+        apiEndpoint.append("?fmt=json&inc=release-groups");
         try
         {
             URL url = new URL(apiEndpoint.toString());
@@ -155,11 +155,12 @@ public class AlbumSearcher
                     data.append(input);
             }
 
-            JsonNode jsonnode = m_objectMapper.readTree(data.toString()).get("date");
-            System.out.println(jsonnode);
-            if (jsonnode != null)
+            JsonNode node = m_objectMapper.readTree(data.toString());
+            JsonNode releaseGroup = node.findValue("release-group");
+            if (releaseGroup != null && releaseGroup.size()>0)
             {
-                String[] dateItems = jsonnode.textValue().split("-");
+                String release = releaseGroup.get("first-release-date").asText();
+                String[] dateItems = release.split("-");
                 if (dateItems != null && dateItems.length == 3)
                 {
                     LocalDate releaseDate = LocalDate.of(Integer.parseInt(dateItems[0]),

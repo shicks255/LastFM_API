@@ -31,7 +31,7 @@ public class AlbumSearchTest
         Album full = searcher.getFullAlbum(albums.get(0).getMbid());
         assertTrue("Wrong album artist found for " + albumTitle,full.getArtist().equalsIgnoreCase("Killswitch Engage"));
         LocalDate year = searcher.getAlbumDate(full.getMbid());
-        assertEquals("Wrong year found for " + albumTitle, year, LocalDate.of(2013, 04, 2));
+        assertEquals("Wrong year found for " + albumTitle, year, LocalDate.of(2013, 03, 27));
 
         System.out.println(full);
     }
