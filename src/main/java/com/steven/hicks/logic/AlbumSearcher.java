@@ -89,13 +89,16 @@ public class AlbumSearcher
      *
      * Used to get details from an album, such as Tracks[] and Images[]
      * Can be used after getting all the albums from an <ArtistSearcher>ArtistSearcher</ArtistSearcher>
+     * If mbid is present, query sing that, else query using artistName and title
      *
-//     * @param mbid - String MusicBrainz id.
+     * @param mbid - String MusicBrainz id.
+     * @param title - String title
+     * @param artistName - String artistName
      * @return <Album>Album</Album>
      */
-    public Album getFullAlbum(String mbid, String title, String artist)
+    public Album getFullAlbum(String mbid, String title, String artistName)
     {
-        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&artist=" + artist.replace(" ", "%20"));
+        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&artist=" + artistName.replace(" ", "%20"));
 
         if (mbid.length() > 0)
             apiEndpoint.append("&mbid=" + mbid);
