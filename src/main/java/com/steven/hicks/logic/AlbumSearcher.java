@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.steven.hicks.MissingConfigKeyException;
 import com.steven.hicks.NoConfigException;
-import com.steven.hicks.beans.Album;
+import com.steven.hicks.beans.album.Album;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -90,13 +90,17 @@ public class AlbumSearcher
      * Used to get details from an album, such as Tracks[] and Images[]
      * Can be used after getting all the albums from an <ArtistSearcher>ArtistSearcher</ArtistSearcher>
      *
-     * @param mbid - String MusicBrainz id.
+//     * @param mbid - String MusicBrainz id.
      * @return <Album>Album</Album>
      */
-    public Album getFullAlbum(String mbid)
+    public Album getFullAlbum(String mbid, String title, String artist)
     {
-        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&mbid=");
-        apiEndpoint.append(mbid);
+        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&artist=" + artist.replace(" ", "%20"));
+
+        if (mbid.length() > 0)
+            apiEndpoint.append("&mbid=" + mbid);
+        else
+            apiEndpoint.append("&album=" + title.replace(" ", "%20"));
         apiEndpoint.append("&api_key=" + config.getString("api_key") +"&format=json");
 
         Album fullAlbum = null;
@@ -117,9 +121,12 @@ public class AlbumSearcher
             }
 
             JsonNode node = m_objectMapper.readTree(data.toString());
-            JsonNode inner = node.get("album");
-            Album aa = m_objectMapper.treeToValue(inner, Album.class);
-            fullAlbum = aa;
+            if (node.get("album") != null)
+            {
+                JsonNode inner = node.get("album");
+                Album aa = m_objectMapper.treeToValue(inner, Album.class);
+                fullAlbum = aa;
+            }
         }
         catch (IOException e)
         {

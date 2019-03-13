@@ -1,4 +1,4 @@
-import com.steven.hicks.beans.Album;
+import com.steven.hicks.beans.album.Album;
 import com.steven.hicks.logic.AlbumQueryBuilder;
 import com.steven.hicks.logic.AlbumSearcher;
 import org.junit.Test;
@@ -14,7 +14,7 @@ public class AlbumSearchTest
     @Test
     public void basicSearch()
     {
-        AlbumQueryBuilder queryBuilder = new AlbumQueryBuilder.Builder().albumName("dark side of the moon").build();
+        AlbumQueryBuilder queryBuilder = new AlbumQueryBuilder.Builder().albumName("Integrity Blues").build();
         AlbumSearcher searcher = new AlbumSearcher();
         List<Album> albums = searcher.searchForAlbums(queryBuilder);
         assertTrue("Found dark side of the moon records", albums != null && albums.size()>0);
@@ -28,7 +28,9 @@ public class AlbumSearchTest
         AlbumSearcher searcher = new AlbumSearcher();
         List<Album> albums = searcher.searchForAlbums(queryBuilder);
 
-        Album full = searcher.getFullAlbum(albums.get(0).getMbid());
+        Album album = albums.get(0);
+
+        Album full = searcher.getFullAlbum(album.getMbid(), album.getName(), album.getArtist());
         assertTrue("Wrong album artist found for " + albumTitle,full.getArtist().equalsIgnoreCase("Killswitch Engage"));
         LocalDate year = searcher.getAlbumDate(full.getMbid());
         assertEquals("Wrong year found for " + albumTitle, year, LocalDate.of(2013, 03, 27));
@@ -44,7 +46,9 @@ public class AlbumSearchTest
         AlbumSearcher searcher = new AlbumSearcher();
         List<Album> albums = searcher.searchForAlbums(queryBuilder);
 
-        Album full = searcher.getFullAlbum(albums.get(0).getMbid());
+        Album album = albums.get(0);
+
+        Album full = searcher.getFullAlbum(album.getMbid(), albumTitle, album.getArtist());
         assertTrue(albumTitle + " has images", full.getImage().length > 0);
         assertTrue(albumTitle + " has tracks", full.getTracks().getTrack().length > 0);
     }

@@ -1,5 +1,5 @@
-import com.steven.hicks.beans.Album;
-import com.steven.hicks.beans.Artist;
+import com.steven.hicks.beans.album.Album;
+import com.steven.hicks.beans.artist.Artist;
 import com.steven.hicks.beans.ArtistAlbums;
 import com.steven.hicks.logic.AlbumSearcher;
 import com.steven.hicks.logic.ArtistQueryBuilder;
@@ -7,6 +7,7 @@ import com.steven.hicks.logic.ArtistSearcher;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,13 +19,13 @@ public class ArtistSearchTest
         ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName("Pink Floyd").build();
         ArtistSearcher searcher = new ArtistSearcher();
         List<Artist> artists = searcher.searchForArtists(builder);
-        assertTrue("Cant query Pink Floyd", artists!=null && artists.size() > 0);
+        assertTrue("Cant query Pink Floyd", artists!=null && artists.size() > 0 && artists.get(0).getName().equalsIgnoreCase("pink floyd"));
     }
 
     @Test
     public void artistSearchTest1()
     {
-        String artistName = "american football";
+        String artistName = "American Football";
         ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName(artistName).setLimit(1).build();
         ArtistSearcher searcher = new ArtistSearcher();
         List<Artist> artists = searcher.searchForArtists(builder);
@@ -33,7 +34,8 @@ public class ArtistSearchTest
         AlbumSearcher albumSearcher = new AlbumSearcher();
 
         List<ArtistAlbums> albums = searcher.getAlbums(new ArtistQueryBuilder.Builder().mbid(fullArtist.getMbid()).build());
-        List<Album> fullAlbums = albums.stream().map(x -> albumSearcher.getFullAlbum(x.getMbid())).collect(Collectors.toList());
+        albums.sort(Comparator.comparing(ArtistAlbums::getPlaycount).reversed());
+        List<Album> fullAlbums = albums.stream().map(x -> albumSearcher.getFullAlbum(x.getMbid(), x.getName(),artistName)).collect(Collectors.toList());
 
         assertTrue(artistName + " has albums", albums.size() > 0);
         assertTrue(artistName + " has albums that were able to get full", fullAlbums.size() > 0);

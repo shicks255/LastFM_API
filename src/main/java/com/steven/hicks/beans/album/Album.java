@@ -1,8 +1,8 @@
-package com.steven.hicks.beans;
+package com.steven.hicks.beans.album;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -18,6 +18,7 @@ public class Album
     private int    m_listeners;
     private long   m_playCount;
     private Tracks  tracks;
+    private Bio     wiki;
 
     public Album()
     {}
@@ -129,114 +130,14 @@ public class Album
         m_playCount = playCount;
     }
 
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Image
+    public Bio getWiki()
     {
-        String text = "";
-        String size = "";
-
-        public String getSize()
-        {
-            return size;
-        }
-
-        public void setSize(String size)
-        {
-            this.size = size;
-        }
-
-        @JsonProperty("#text")
-        public String getText()
-        {
-            return text;
-        }
-
-        public void setText(String text)
-        {
-            this.text = text;
-        }
+        return wiki;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Tracks
+    public void setWiki(Bio wiki)
     {
-        private Track[] track;
-
-        public Track[] getTrack()
-        {
-            return track;
-        }
-
-        public void setTrack(Track[] track)
-        {
-            this.track = track;
-        }
+        this.wiki = wiki;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Attr
-    {
-        private String rank = "";
-
-        public String getRank()
-        {
-            return rank;
-        }
-
-        public void setRank(String rank)
-        {
-            this.rank = rank;
-        }
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Track
-    {
-        private Integer m_rank;
-        private Attr attr;
-        private String m_name = "";
-        private int    m_duration;
-
-        public Integer getRank()
-        {
-            return m_rank != null ? m_rank : 0;
-        }
-
-        public void setRank(Integer rank)
-        {
-            m_rank = rank;
-        }
-
-        public String getName()
-        {
-            return m_name;
-        }
-
-        public void setName(String name)
-        {
-            m_name = name;
-        }
-
-        public int getDuration()
-        {
-            return m_duration;
-        }
-
-        public void setDuration(int duration)
-        {
-            m_duration = duration;
-        }
-
-        @JsonProperty("@attr")
-        public Attr getAttr()
-        {
-            return attr;
-        }
-
-        public void setAttr(Attr attr)
-        {
-            this.attr = attr;
-        }
-    }
 }

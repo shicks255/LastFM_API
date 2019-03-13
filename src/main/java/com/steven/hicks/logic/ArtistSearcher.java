@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.steven.hicks.MissingConfigKeyException;
 import com.steven.hicks.NoConfigException;
-import com.steven.hicks.beans.Artist;
+import com.steven.hicks.beans.artist.Artist;
 import com.steven.hicks.beans.ArtistAlbums;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -127,7 +127,6 @@ public class ArtistSearcher
             JsonNode inner = node.get("topalbums").get("album");
             List<ArtistAlbums> artistAlbums = m_objectMapper.readValue(inner.toString(), new TypeReference<List<ArtistAlbums>>() {});
             artistAlbums.removeIf(x -> x.getImage().length == 0);
-            artistAlbums.removeIf(x -> x.getMbid().length() == 0);
             albumList = artistAlbums;
         }
         catch (IOException e)
