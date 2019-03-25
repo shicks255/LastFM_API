@@ -98,7 +98,7 @@ public class AlbumSearcher
      */
     public Album getFullAlbum(String mbid, String title, String artistName)
     {
-        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&artist=" + artistName.replace(" ", "%20"));
+        StringBuilder apiEndpoint = new StringBuilder("https://ws.audioscrobbler.com/2.0/?method=album.getInfo&artist=" + artistName.replace(" ", "%20").replace("&", "%26"));
 
         if (mbid.length() > 0)
             apiEndpoint.append("&mbid=" + mbid);

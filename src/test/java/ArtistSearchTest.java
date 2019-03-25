@@ -41,4 +41,22 @@ public class ArtistSearchTest
         assertTrue(artistName + " has albums that were able to get full", fullAlbums.size() > 0);
     }
 
+    @Test
+    public void artistSearchTest2()
+    {
+        String artistName = "The World Is A Beautiful Place";
+        ArtistQueryBuilder builder = new ArtistQueryBuilder.Builder().artistName(artistName).setLimit(1).build();
+        ArtistSearcher searcher = new ArtistSearcher();
+        List<Artist> artists = searcher.searchForArtists(builder);
+
+        Artist fullArtist = searcher.getFullArtist(artists.get(0).getMbid());
+        AlbumSearcher albumSearcher = new AlbumSearcher();
+
+        List<ArtistAlbums> albums = searcher.getAlbums(new ArtistQueryBuilder.Builder().mbid(fullArtist.getMbid()).build());
+        albums.sort(Comparator.comparing(ArtistAlbums::getPlaycount).reversed());
+        List<Album> fullAlbums = albums.stream().map(x -> albumSearcher.getFullAlbum(x.getMbid(), x.getName(),fullArtist.getName())).collect(Collectors.toList());
+
+        assertTrue(artistName + " has albums", albums.size() > 0);
+        assertTrue(artistName + " has albums that were able to get full", fullAlbums.size() > 0);
+    }
 }
